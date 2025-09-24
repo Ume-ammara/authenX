@@ -10,7 +10,7 @@ export const comparePassword = async (password, hashedPassword) => {
   return await bcrypt.compare(password, hashedPassword);
 };
 
-export const genrateAcessToken = (user) => {
+export const generateAccessToken = (user) => {
   return jwt.sign(
     {
       _id: user.id,
@@ -22,7 +22,7 @@ export const genrateAcessToken = (user) => {
   );
 };
 
-export const genrateRefreshToken = (user) => {
+export const generateRefreshToken = (user) => {
   return jwt.sign(
     {
       _id: user.id,
@@ -35,11 +35,11 @@ export const genrateRefreshToken = (user) => {
 };
 
 export const createHash = (value) => {
-  return crypto.createHash("shah256").update(value).digest("hex");
+  return crypto.createHash("sha256").update(value).digest("hex");
 };
 
-export const genrateTemporaryToken = () => {
-  const unHashedtoken = crypto.randomBytes(20).toString("hex");
+export const generateTemporaryToken = () => {
+  const unHashedToken = crypto.randomBytes(20).toString("hex");
 
   const hashedToken = crypto
     .createHash("sha256")
