@@ -43,9 +43,9 @@ export const generateTemporaryToken = () => {
 
   const hashedToken = crypto
     .createHash("sha256")
-    .update(unHashedtoken)
+    .update(unHashedToken)
     .digest("hex");
-  const tokenExpiry = Date.now() + 20 * 60 * 1000; // 20min
+  const tokenExpiry = Date.now() + 20 * 60 * 1000; 
 
-  return { hashedToken, unHashedtoken, tokenExpiry };
+  return { hashedToken, unHashedToken, tokenExpiry };
 };
