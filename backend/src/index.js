@@ -1,9 +1,8 @@
-import express from "express";
-import dotenv from "dotenv";
-dotenv.config();
+import { app } from "./app.js";
+import { env } from "./config/env.js";
 
-const app = express();
+const PORT = env.PORT;
 
-app.listen(process.env.PORT, () => {
+app.listen(PORT, () => {
   console.log("Server is runing on port 8080");
 });
