@@ -2,7 +2,9 @@ import express from "express";
 import { env } from "./config/env.js";
 import cors from "cors";
 import { errorHandler } from "./middlewares/error.middleware.js";
-import cookieParser from "cookie-parser"
+import cookieParser from "cookie-parser";
+
+import { healthCheck } from "./routes/healthcheck.routes.js";
 
 const app = express();
 
@@ -15,10 +17,12 @@ app.use(
   }),
 );
 
-app.use(express.json())
-app.use(express.urlencoded({extended:true}))
-app.use(cookieParser())
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+app.use(cookieParser());
 
-app.use(errorHandler)
+app.use("/api/v1/healthcheck", healthCheck);
+
+app.use(errorHandler);
 
 export { app };
