@@ -5,6 +5,7 @@ import { errorHandler } from "./middlewares/error.middleware.js";
 import cookieParser from "cookie-parser";
 
 import healthCheck from "./routes/healthcheck.routes.js";
+import router from "./routes/auth.routes.js";
 
 const app = express();
 
@@ -22,6 +23,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 
 app.use("/api/v1/healthcheck", healthCheck);
+app.use("/api/v1/auth", router);
 
 app.use(errorHandler);
 
