@@ -18,4 +18,3 @@ export const forgotPasswordSchema = z.object({
 export const verifyEmailSchema = z.object({
   token: z.string().nonempty("Token is required"),
 });
-

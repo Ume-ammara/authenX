@@ -4,7 +4,7 @@ import cors from "cors";
 import { errorHandler } from "./middlewares/error.middleware.js";
 import cookieParser from "cookie-parser";
 
-import { healthCheck } from "./routes/healthcheck.routes.js";
+import healthCheck from "./routes/healthcheck.routes.js";
 
 const app = express();
 

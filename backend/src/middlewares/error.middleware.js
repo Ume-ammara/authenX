@@ -1,6 +1,7 @@
 import { ApiError } from "../utils/ApiError.js";
 import { env } from "../config/env.js";
 import { ZodError } from "zod";
+import { HTTPSTATUS } from "../config/http.config.js";
 
 export const errorHandler = (err, req, res, next) => {
   if (err instanceof ZodError) {
@@ -8,8 +9,8 @@ export const errorHandler = (err, req, res, next) => {
       console.error("ZodError:", err);
     }
 
-    return res.status(400).json({
-      statusCode: 400,
+    return res.status(HTTPSTATUS.BAD_REQUEST).json({
+      statusCode: HTTPSTATUS.BAD_REQUEST,
       success: false,
       message: "Validation failed",
       error: err.errors.map((e) => ({
@@ -25,8 +26,8 @@ export const errorHandler = (err, req, res, next) => {
       console.error("Stack:", err.stack);
     }
 
-    return res.status(err.statusCode || 500).json({
-      statusCode: err.statusCode || 500,
+    return res.status(err.statusCode || HTTPSTATUS.INTERNAL_SERVER_ERROR).json({
+      statusCode: err.statusCode || HTTPSTATUS.INTERNAL_SERVER_ERROR,
       success: false,
       message: err.message || "Something went wrong",
       error:
@@ -38,8 +39,8 @@ export const errorHandler = (err, req, res, next) => {
     console.error("Unhandled error:", err);
   }
 
-  return res.status(500).json({
-    statusCode: 500,
+  return res.status(HTTPSTATUS.INTERNAL_SERVER_ERROR).json({
+    statusCode: HTTPSTATUS.INTERNAL_SERVER_ERROR,
     success: false,
     message: "Internal Server Error",
     error: err,
