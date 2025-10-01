@@ -30,7 +30,7 @@ export const registerServices = async (fullname, email, password) => {
       email,
       password: hashedPassword,
       verificationToken: hashedToken,
-      verificationTokenExpiry: tokenExpiry,
+      verificationTokenExpiry: new Date(Date.now() + tokenExpiry),
     },
   });
 
