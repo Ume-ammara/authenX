@@ -2,6 +2,7 @@ import { ApiError } from "../utils/ApiError.js";
 import { HTTPSTATUS } from "../config/http.config.js";
 import { prisma } from "../config/db.js";
 import { env } from "../config/env.js";
+import { emailVerificationMailGenContent, sendMail } from "../utils/mail.js";
 import {
   comparePassword,
   createHash,
@@ -10,7 +11,50 @@ import {
   generateAccessToken,
   generateTemporaryToken,
 } from "../utils/auth-helpers.js";
-import { includes } from "zod";
+
+export const registerServices = async (fullname, email, password) => {
+  const existedUser = await prisma.user.findUnique({ where: { email } });
+  if (existedUser) {
+    throw new ApiError(
+      HTTPSTATUS.CONFLICT,
+      "User already exists with this email",
+    );
+  }
+
+  const hashedPassword = await hashPassword(password);
+  const { hashedToken, unHashedToken, tokenExpiry } = generateTemporaryToken();
+
+  const user = await prisma.user.create({
+    data: {
+      fullname,
+      email,
+      password: hashedPassword,
+      verificationToken: hashedToken,
+      verificationTokenExpiry: tokenExpiry,
+    },
+  });
+
+  const verificationUrl = `${env.FRONTEND_URL}/auth/verify/${unHashedToken}`;
+
+  try {
+    await sendMail({
+      email,
+      subject: "email verification",
+      mailGenContent: emailVerificationMailGenContent(
+        fullname,
+        verificationUrl,
+      ),
+    });
+  } catch (error) {
+    console.error("Failed to send verification email:", error);
+    throw new ApiError(
+      HTTPSTATUS.INTERNAL_SERVER_ERROR,
+      "Failed to send verification email",
+    );
+  }
+
+  return user;
+};
 
 export const loginServices = async (email, password) => {
   const user = await prisma.user.findUnique({

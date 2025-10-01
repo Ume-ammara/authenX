@@ -1,12 +1,27 @@
 import {
   loginServices,
   refreshTokenService,
+  registerServices,
 } from "../services/auth.services.js";
 import { asyncHandler } from "../utils/asyncHandler.js";
 import { ApiResponse } from "../utils/ApiResponse.js";
 import { ApiError } from "../utils/ApiError.js";
-import { loginSchema } from "../schemas/auth.schema.js";
+import { loginSchema, registerSchema } from "../schemas/auth.schema.js";
 import { HTTPSTATUS } from "../config/http.config.js";
+
+export const registercontoller = asyncHandler(async (req, res) => {
+  const { fullname, email, password } = registerSchema.parse(req.body);
+  const user = await registerServices(fullname, email, password);
+  return res
+    .status(HTTPSTATUS.CREATED)
+    .json(
+      new ApiResponse(
+        HTTPSTATUS.CREATED,
+        { user },
+        "User registered successfully",
+      ),
+    );
+});
 
 export const loginController = asyncHandler(async (req, res) => {
   const { email, password } = loginSchema.parse(req.body);
