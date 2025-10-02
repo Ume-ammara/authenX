@@ -25,10 +25,13 @@ export const registercontoller = asyncHandler(async (req, res) => {
 
 export const loginController = asyncHandler(async (req, res) => {
   const { email, password } = loginSchema.parse(req.body);
+  const ipAddress = req.ip;
+  const userAgent = req.headers["user-agent"];
   const { user, refreshToken, accessToken } = await loginServices(
     email,
     password,
-    req,
+    ipAddress,
+    userAgent,
   );
   const isProduction = process.env.NODE_ENV === "production";
 
@@ -53,6 +56,7 @@ export const loginController = asyncHandler(async (req, res) => {
     new ApiResponse(HTTPSTATUS.OK, "Login successful", {
       user,
       accessToken,
+      refreshToken,
     }),
   );
 });

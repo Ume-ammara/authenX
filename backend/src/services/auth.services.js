@@ -56,7 +56,7 @@ export const registerServices = async (fullname, email, password) => {
   return user;
 };
 
-export const loginServices = async (email, password) => {
+export const loginServices = async (email, password, ipAddress, userAgent) => {
   const user = await prisma.user.findUnique({
     where: { email },
   });
@@ -79,14 +79,70 @@ export const loginServices = async (email, password) => {
   await prisma.session.create({
     data: {
       userId: user.id,
-      refreshToken,
-      userAgent: req.headers["user-agent"],
-      ipAddress: req.ip,
-      expiresAt: new Date(Date.now() + env.REFRESH_TOKEN_EXPIRY),
+      refreshToken: createHash(refreshToken),
+      userAgent,
+      ipAddress,
+      expiresAt: new Date(Date.now() + Number(env.REFRESH_TOKEN_EXPIRY)),
     },
   });
 
   return { user, refreshToken, accessToken };
+};
+
+export const verifyEmailServices = async (token) => {
+  const hashToken = createHash(token);
+
+  const user = await prisma.user.findFirst({
+    where: {
+      verificationToken: hashToken,
+    },
+  });
+
+  if (!user) {
+    throw new ApiError(HTTPSTATUS.BAD_REQUEST, "User not found");
+  }
+
+  if (user.isVerified) {
+    throw new ApiError(HTTPSTATUS.BAD_REQUEST, "Email is already verified");
+  }
+  if (user.verificationTokenExpiry < new Date()) {
+    throw new ApiError(
+      HTTPSTATUS.BAD_REQUEST,
+      "Token expired, please request a new one",
+    );
+  }
+
+  const { hashedToken, unHashedToken, tokenExpiry } = generateTemporaryToken();
+
+  const verificationUrl = `${env.FRONTEND_URL}/auth/verify/${unHashedToken}`;
+
+  try {
+    await sendMail({
+      email,
+      subject: "email verification",
+      mailGenContent: emailVerificationMailGenContent(
+        fullname,
+        verificationUrl,
+      ),
+    });
+  } catch (error) {
+    console.error("Failed to send verification email:", error);
+    throw new ApiError(
+      HTTPSTATUS.INTERNAL_SERVER_ERROR,
+      "Failed to send verification email",
+    );
+  }
+
+  await prisma.user.update({
+    where: {
+      email: user.email,
+    },
+    data: {
+      verificationToken: hashedToken,
+      verificationTokenExpiry: tokenExpiry,
+    },
+  });
+  return 
 };
 
 export const refreshTokenService = async (token, ipAddress, userAgent) => {
@@ -136,7 +192,7 @@ export const refreshTokenService = async (token, ipAddress, userAgent) => {
       refreshToken: createHash(refreshToken),
       ipAddress,
       userAgent,
-      expiresAt: new Date(Date.now() + env.REFRESH_TOKEN_EXPIRY),
+      expiresAt: new Date(Date.now() + Number(env.REFRESH_TOKEN_EXPIRY)),
     },
   });
 

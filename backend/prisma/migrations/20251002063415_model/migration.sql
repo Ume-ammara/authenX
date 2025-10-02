@@ -11,7 +11,7 @@ CREATE TABLE "public"."User" (
     "role" "public"."Role" NOT NULL DEFAULT 'USER',
     "isVerified" BOOLEAN NOT NULL DEFAULT false,
     "verificationToken" TEXT,
-    "verificationTokenExpriy" TIMESTAMP(3),
+    "verificationTokenExpiry" TIMESTAMP(3),
     "resetPasswordToken" TEXT,
     "resetPasswordTokenExpiry" TIMESTAMP(3),
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -24,7 +24,7 @@ CREATE TABLE "public"."User" (
 CREATE TABLE "public"."Session" (
     "id" TEXT NOT NULL,
     "userId" TEXT NOT NULL,
-    "refreshToken" TEXT NOT NULL,
+    "refreshToken" TEXT,
     "userAgent" TEXT,
     "ipAddress" TEXT,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
