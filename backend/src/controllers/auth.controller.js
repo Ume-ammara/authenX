@@ -2,6 +2,7 @@ import {
   loginServices,
   refreshTokenService,
   registerServices,
+  verifyEmailServices,
 } from "../services/auth.services.js";
 import { asyncHandler } from "../utils/asyncHandler.js";
 import { ApiResponse } from "../utils/ApiResponse.js";
@@ -59,6 +60,18 @@ export const loginController = asyncHandler(async (req, res) => {
       refreshToken,
     }),
   );
+});
+
+export const verifyEmailController = asyncHandler(async (req, res) => {
+  const { token } = req.params;
+
+  const user = verifyEmailServices(token);
+
+  return res
+    .status(HTTPSTATUS.OK)
+    .json(
+      new ApiResponse(HTTPSTATUS.OK, "Email verified successfully", { user }),
+    );
 });
 
 export const refreshTokenController = asyncHandler(async (req, res) => {

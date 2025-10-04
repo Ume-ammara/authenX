@@ -112,37 +112,16 @@ export const verifyEmailServices = async (token) => {
     );
   }
 
-  const { hashedToken, unHashedToken, tokenExpiry } = generateTemporaryToken();
-
-  const verificationUrl = `${env.FRONTEND_URL}/auth/verify/${unHashedToken}`;
-
-  try {
-    await sendMail({
-      email,
-      subject: "email verification",
-      mailGenContent: emailVerificationMailGenContent(
-        fullname,
-        verificationUrl,
-      ),
-    });
-  } catch (error) {
-    console.error("Failed to send verification email:", error);
-    throw new ApiError(
-      HTTPSTATUS.INTERNAL_SERVER_ERROR,
-      "Failed to send verification email",
-    );
-  }
-
-  await prisma.user.update({
-    where: {
-      email: user.email,
-    },
+  const updateUser = await prisma.user.update({
+    where: { id: user.id },
     data: {
-      verificationToken: hashedToken,
-      verificationTokenExpiry: tokenExpiry,
+      isVerified: true,
+      verificationToken: null,
+      verificationTokenExpiry: null,
     },
   });
-  return 
+
+  return updateUser;
 };
 
 export const refreshTokenService = async (token, ipAddress, userAgent) => {
