@@ -1,4 +1,5 @@
 import {
+  forgotPasswordService,
   loginServices,
   refreshTokenService,
   registerServices,
@@ -7,7 +8,11 @@ import {
 import { asyncHandler } from "../utils/asyncHandler.js";
 import { ApiResponse } from "../utils/ApiResponse.js";
 import { ApiError } from "../utils/ApiError.js";
-import { loginSchema, registerSchema } from "../schemas/auth.schema.js";
+import {
+  forgotPasswordSchema,
+  loginSchema,
+  registerSchema,
+} from "../schemas/auth.schema.js";
 import { HTTPSTATUS } from "../config/http.config.js";
 
 export const registercontoller = asyncHandler(async (req, res) => {
@@ -114,4 +119,14 @@ export const refreshTokenController = asyncHandler(async (req, res) => {
         "Access token refreshed successfully",
       ),
     );
+});
+
+export const forgotPasswordController = asyncHandler(async (req, res) => {
+  const { email } = forgotPasswordSchema.parse(req.body);
+  const user = await forgotPasswordService(email);
+  return res.status(HTTPSTATUS.OK).json(
+    new ApiResponse(HTTPSTATUS.OK, "Password reset link sent successfully", {
+      user,
+    }),
+  );
 });

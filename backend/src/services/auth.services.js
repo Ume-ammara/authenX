@@ -2,7 +2,11 @@ import { ApiError } from "../utils/ApiError.js";
 import { HTTPSTATUS } from "../config/http.config.js";
 import { prisma } from "../config/db.js";
 import { env } from "../config/env.js";
-import { emailVerificationMailGenContent, sendMail } from "../utils/mail.js";
+import {
+  emailVerificationMailGenContent,
+  sendMail,
+  forgotPasswordMailGenContent,
+} from "../utils/mail.js";
 import {
   comparePassword,
   createHash,
@@ -176,4 +180,36 @@ export const refreshTokenService = async (token, ipAddress, userAgent) => {
   });
 
   return { accessToken, refreshToken, user };
+};
+
+export const forgotPasswordService = async (email) => {
+  const user = await prisma.user.findUnique({
+    where: {
+      email: email,
+    },
+  });
+
+  if (!user) {
+    throw new ApiError(HTTPSTATUS.BAD_REQUEST, "Unauthorized request");
+  }
+
+  const { hashedToken, unHashedToken, tokenExpiry } = generateTemporaryToken();
+
+  const updatedUser = await prisma.user.update({
+    where: { id: user.id },
+    data: {
+      resetPasswordToken: hashedToken,
+      resetPasswordTokenExpiry: new Date(Date.now() + tokenExpiry),
+    },
+  });
+
+  const resetUrl = `${env.FRONTEND_URL}/auth/reset/${unHashedToken}`;
+
+  await sendMail({
+    email,
+    subject: "Reset your password",
+    mailGenContent: forgotPasswordMailGenContent(user.fullname, resetUrl),
+  });
+
+  return { updatedUser };
 };
