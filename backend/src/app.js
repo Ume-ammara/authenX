@@ -6,6 +6,7 @@ import cookieParser from "cookie-parser";
 
 import healthCheck from "./routes/healthcheck.routes.js";
 import router from "./routes/auth.routes.js";
+import "./config/passport.js";
 
 const app = express();
 

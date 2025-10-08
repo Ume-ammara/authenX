@@ -213,3 +213,61 @@ export const forgotPasswordService = async (email) => {
 
   return { updatedUser };
 };
+
+// google Oauth services
+
+export const googleOAuthServices = async (profile) => {
+  let user = await prisma.user.findUnique({
+    where: {
+      email: profile.email,
+    },
+  });
+
+  if (!user) {
+    user = await prisma.user.create({
+      data: {
+        email: profile.email,
+        fullname: profile.fullname,
+        username:
+          profile.username ||
+          profile.email.split("@")[0] + Math.floor(Math.random() * 1000),
+        avatar: profile.avatar,
+        isVerified: true,
+      },
+    });
+  }
+
+  const session = await prisma.session.create({
+    data: {
+      userId: user.id,
+      isValid: true,
+      expiresAt: new Date(Date.now() + Number(env.REFRESH_TOKEN_EXPIRY)),
+    },
+  });
+
+  const accessToken = await generateAccessToken({
+    id: user.id,
+    email: user.email,
+    role: user.role,
+    sessionId: session.id,
+  });
+
+  const refreshToken = await generateRefreshToken({
+    id: user.id,
+    email: user.email,
+    role: user.role,
+    sessionId: session.id,
+  });
+
+  await prisma.session.update({
+    where: {
+      id: session.id,
+    },
+    data: {
+      refreshToken: createHash(refreshToken),
+      isValid: true,
+    },
+  });
+
+  return { accessToken, refreshToken };
+};

@@ -1,5 +1,6 @@
 import {
   forgotPasswordService,
+  googleOAuthServices,
   loginServices,
   refreshTokenService,
   registerServices,
@@ -14,6 +15,8 @@ import {
   registerSchema,
 } from "../schemas/auth.schema.js";
 import { HTTPSTATUS } from "../config/http.config.js";
+import passport from "passport";
+import { env } from "../config/env.js";
 
 export const registercontoller = asyncHandler(async (req, res) => {
   const { fullname, email, password } = registerSchema.parse(req.body);
@@ -130,3 +133,50 @@ export const forgotPasswordController = asyncHandler(async (req, res) => {
     }),
   );
 });
+
+// login with google
+
+export const googleOAuthController = passport.authenticate("google", {
+  scope: ["profile", "email"],
+});
+
+export const googleCallbackController = (req, res, next) => {
+  passport.authenticate(
+    "google",
+    {
+      session: false,
+      failureRedirect: "/auth/login",
+    },
+    async (err, profile, info) => {
+      if (err) return next(err);
+      if (!profile) return res.redirect("/auth/login");
+
+      try {
+        const { accessToken, refreshToken } = await googleOAuthServices(
+          profile,
+        );
+        const isProduction = env.NODE_ENV === "production";
+        const accessCookieOptions = {
+          httpOnly: true,
+          secure: isProduction,
+          sameSite: isProduction ? "none" : "lax",
+          maxAge: 15 * 60 * 1000,
+        };
+
+        const refreshCookieOptions = {
+          httpOnly: true,
+          secure: isProduction,
+          sameSite: isProduction ? "none" : "lax",
+          maxAge: 7 * 24 * 60 * 60 * 1000,
+        };
+
+        res.cookie("accessToken", accessToken, accessCookieOptions);
+        res.cookie("refreshToken", refreshToken, refreshCookieOptions);
+
+        res.redirect(`${env.FRONTEND_URL}/profile`);
+      } catch (error) {
+        next(error);
+      }
+    },
+  )(req, res, next);
+};
