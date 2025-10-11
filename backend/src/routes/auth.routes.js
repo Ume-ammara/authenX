@@ -9,9 +9,12 @@ import {
   registercontoller,
   verifyEmailController,
 } from "../controllers/auth.controller.js";
+import { upload } from "../middlewares/multer.js";
 
 const router = Router();
-router.route("/register").post(registercontoller);
+router
+  .route("/register")
+  .post(upload.fields([{ name: "avatar", maxCount: 1 }]), registercontoller);
 router.route("/login").post(loginController);
 router.route("/refresh").post(refreshTokenController);
 router.route("/verify/:token").get(verifyEmailController);

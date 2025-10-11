@@ -15,8 +15,14 @@ import {
   generateAccessToken,
   generateTemporaryToken,
 } from "../utils/auth-helpers.js";
+import { uploadOnCloudinary } from "../utils/cloudinary.js";
 
-export const registerServices = async (fullname, email, password) => {
+export const registerServices = async (
+  fullname,
+  email,
+  password,
+  avatarLocalPath,
+) => {
   const existedUser = await prisma.user.findUnique({ where: { email } });
   if (existedUser) {
     throw new ApiError(
@@ -27,12 +33,18 @@ export const registerServices = async (fullname, email, password) => {
 
   const hashedPassword = await hashPassword(password);
   const { hashedToken, unHashedToken, tokenExpiry } = generateTemporaryToken();
+  let avatarUrl = "";
+  if (avatarLocalPath) {
+    const uploadResult = await uploadOnCloudinary(avatarLocalPath);
+    avatarUrl = uploadResult?.secure_url || "";
+  }
 
   const user = await prisma.user.create({
     data: {
       fullname,
       email,
       password: hashedPassword,
+      avatar: avatarUrl,
       verificationToken: hashedToken,
       verificationTokenExpiry: new Date(Date.now() + tokenExpiry),
     },
