@@ -20,7 +20,8 @@ import { env } from "../config/env.js";
 
 export const registercontoller = asyncHandler(async (req, res) => {
   const { fullname, email, password } = registerSchema.parse(req.body);
-  const avatarLocalPath = req.file?.avatar[0]?.path;
+  const avatarLocalPath = req.files?.avatar[0]?.path;
+  console.log("file received", avatarLocalPath);
   const user = await registerServices(
     fullname,
     email,
