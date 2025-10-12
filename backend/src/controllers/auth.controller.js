@@ -141,6 +141,10 @@ export const forgotPasswordController = asyncHandler(async (req, res) => {
   );
 });
 
+export const logoutController = asyncHandler(async()=>{
+  
+})
+
 // login with google
 
 export const googleOAuthController = passport.authenticate("google", {

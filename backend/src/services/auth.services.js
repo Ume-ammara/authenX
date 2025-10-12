@@ -226,6 +226,8 @@ export const forgotPasswordService = async (email) => {
   return { updatedUser };
 };
 
+export const logoutService = async () => {};
+
 // google Oauth services
 
 export const googleOAuthServices = async (profile) => {
