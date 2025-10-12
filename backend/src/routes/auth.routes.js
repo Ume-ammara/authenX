@@ -5,11 +5,13 @@ import {
   googleCallbackController,
   googleOAuthController,
   loginController,
+  logoutController,
   refreshTokenController,
   registercontoller,
   verifyEmailController,
 } from "../controllers/auth.controller.js";
 import { upload } from "../middlewares/multer.js";
+import { isLoggedIn } from "../middlewares/auth.middleware.js";
 
 const router = Router();
 router
@@ -19,6 +21,7 @@ router.route("/login").post(loginController);
 router.route("/refresh").post(refreshTokenController);
 router.route("/verify/:token").get(verifyEmailController);
 router.route("/forgot-password").post(forgotPasswordController);
+router.route("/logout").delete(isLoggedIn, logoutController);
 
 // google routes
 

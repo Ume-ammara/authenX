@@ -2,6 +2,7 @@ import {
   forgotPasswordService,
   googleOAuthServices,
   loginServices,
+  logoutService,
   refreshTokenService,
   registerServices,
   verifyEmailServices,
@@ -141,9 +142,16 @@ export const forgotPasswordController = asyncHandler(async (req, res) => {
   );
 });
 
-export const logoutController = asyncHandler(async()=>{
-  
-})
+export const logoutController = asyncHandler(async (req, res) => {
+  const token = req.cookies?.refreshToken;
+  const response = logoutService(token);
+  res.clearCookie("accessToken");
+  res.clearCookie("refreshToken");
+
+  return res
+    .status(HTTPSTATUS.OK)
+    .json(new ApiResponse(HTTPSTATUS.OK, "Logout successfully", response));
+});
 
 // login with google
 

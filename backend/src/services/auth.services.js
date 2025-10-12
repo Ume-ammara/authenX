@@ -226,7 +226,32 @@ export const forgotPasswordService = async (email) => {
   return { updatedUser };
 };
 
-export const logoutService = async () => {};
+export const logoutService = async (refreshToken) => {
+  if (!refreshToken) {
+    throw new ApiError(HTTPSTATUS.BAD_REQUEST, "Refresh token required");
+  }
+
+  const hashedToken = createHash(refreshToken);
+
+  const session = await prisma.session.findFirst({
+    where: { refreshToken: hashedToken },
+  });
+
+  if (!session) {
+    throw new ApiError(
+      HTTPSTATUS.UNAUTHORIZED,
+      "Session not found or already logged out",
+    );
+  }
+
+  await prisma.session.delete({
+    where: {
+      id: session.id,
+    },
+  });
+
+  return { message: "Logged out from all devices successfully" };
+};
 
 // google Oauth services
 
