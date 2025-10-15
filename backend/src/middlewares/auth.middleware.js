@@ -4,6 +4,7 @@ import { env } from "../config/env.js";
 import jwt from "jsonwebtoken";
 
 export const isLoggedIn = asyncHandler(async (req, res, next) => {
+  console.log("isLoggedIn started");
   try {
     const refreshToken = req.cookies.refreshToken;
     if (!refreshToken) {
@@ -29,7 +30,8 @@ export const isLoggedIn = asyncHandler(async (req, res, next) => {
 });
 
 export const isAdmin = asyncHandler(async (req, res, next) => {
-  if (req.user.role !== "admin") {
+  console.log(" isAdmin started:", req.user);
+  if (req.user.role !== "ADMIN") {
     throw new ApiError(403, "Unauthorized request");
   }
   next();
