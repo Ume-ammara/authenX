@@ -8,43 +8,44 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-enum Role{
+enum Role {
   USER
   ADMIN
 }
 
-model User{
-  id        String @id @default(uuid())
-  fullname  String
-  username String? @unique
-  email   String @unique
-  password  String?
-  avatar    String? 
-  role      Role  @default(USER)
-  isVerified  Boolean @default(false)
-  verificationToken String?
+model User {
+  id                       String    @id @default(uuid())
+  fullname                 String
+  username                 String?   @unique
+  email                    String    @unique
+  password                 String?
+  avatar                   String?
+  role                     Role      @default(USER)
+  isVerified               Boolean   @default(false)
+  verificationToken        String?
   verificationTokenExpiry  DateTime?
-  resetPasswordToken String?
-  resetPasswordTokenExpiry  DateTime?
-  createdAt  DateTime  @default(now())
-  updatedAt  DateTime  @updatedAt
-  sessions   Session[]
+  resetPasswordToken       String?
+  resetPasswordTokenExpiry DateTime?
+  createdAt                DateTime  @default(now())
+  updatedAt                DateTime  @updatedAt
+  sessions                 Session[]
 }
 
 model Session {
-  id        String @id @default(uuid())
-  user  User @relation(fields: [userId], references: [id])
-  userId String
-  refreshToken  String? @unique
-  userAgent String?
-  ipAddress String?
-  isValid      Boolean   @default(true)
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  expiresAt  DateTime
-  
+  id           String   @id @default(uuid())
+  user         User     @relation(fields: [userId], references: [id])
+  userId       String
+  refreshToken String?  @unique
+  userAgent    String?
+  ipAddress    String?
+  device       String?
+  os           String?
+  browser      String?
+  isValid      Boolean  @default(true)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+  expiresAt    DateTime
+
   @@index([userId])
   @@index([refreshToken])
 }
-
-

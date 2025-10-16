@@ -14,6 +14,8 @@ export const isLoggedIn = asyncHandler(async (req, res, next) => {
     const token =
       req.cookies?.accessToken || req.header("Authorization")?.split(" ")[1];
 
+    console.log("Authorization Header:", req.headers.authorization);
+
     if (!token) {
       console.log("Token", token);
       throw new ApiError(401, "ACCESS_TOKEN_EXPIRED");
@@ -22,6 +24,7 @@ export const isLoggedIn = asyncHandler(async (req, res, next) => {
     const decodedToken = jwt.verify(token, env.ACCESS_TOKEN_SECRET);
 
     req.user = decodedToken;
+    console.log("Decoded user:", decodedToken);
 
     next();
   } catch (error) {

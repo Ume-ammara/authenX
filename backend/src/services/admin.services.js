@@ -40,3 +40,69 @@ export const getAllUserServices = async () => {
     },
   });
 };
+
+export const getUserByIdServices = async (userId) => {
+  const user = await prisma.user.findUnique({
+    where: {
+      id: userId,
+    },
+  });
+  if (!user) {
+    throw new ApiError(HTTPSTATUS.BAD_REQUEST, "User not found");
+  }
+
+  return user;
+};
+
+export const getAllSessionServices = async (userId) => {
+  const sessions = await prisma.session.findMany({
+    where: {
+      userId: userId,
+    },
+    select: {
+      id: true,
+      userId: true,
+      createdAt: true,
+      userAgent: true,
+      ipAddress: true,
+      device: true,
+      os: true,
+      browser: true,
+    },
+  });
+
+  return sessions;
+};
+
+export const getSessionByIdServices = async (sessionId, userId) => {
+  const session = await prisma.session.findUnique({
+    where: {
+      userId: userId,
+      id: sessionId,
+    },
+  });
+
+  if (!session) {
+    throw new ApiError(HTTPSTATUS.BAD_REQUEST, "Session not found");
+  }
+
+  return session;
+};
+
+export const deleteSessionServices = async (sessionId) => {
+  const session = await prisma.session.findUnique({
+    where: {
+      id: sessionId,
+    },
+  });
+
+  if (!session) {
+    throw new ApiError(404, "Session not found");
+  }
+
+  return await prisma.session.delete({
+    where: {
+      id: sessionId,
+    },
+  });
+};

@@ -2,6 +2,8 @@ import { ApiError } from "../utils/ApiError.js";
 import { HTTPSTATUS } from "../config/http.config.js";
 import { prisma } from "../config/db.js";
 import { env } from "../config/env.js";
+import { UAParser } from "ua-parser-js";
+
 import {
   emailVerificationMailGenContent,
   sendMail,
@@ -92,12 +94,22 @@ export const loginServices = async (email, password, ipAddress, userAgent) => {
   const accessToken = generateAccessToken(user);
   const refreshToken = generateRefreshToken(user);
 
+  const ua = new UAParser(userAgent || "");
+  const browser = `${ua.getBrowser().name || "Unknown"} ${
+    ua.getBrowser().version || ""
+  }`.trim();
+  const os = `${ua.getOS().name || ""} ${ua.getOS().version || ""}`.trim();
+  const device = ua.getDevice().model || ua.getDevice().type || "Desktop";
+
   await prisma.session.create({
     data: {
       userId: user.id,
       refreshToken: createHash(refreshToken),
       userAgent,
       ipAddress,
+      device,
+      os,
+      browser,
       expiresAt: new Date(Date.now() + Number(env.REFRESH_TOKEN_EXPIRY)),
     },
   });

@@ -2,7 +2,11 @@ import { asyncHandler } from "../utils/asyncHandler.js";
 import { ApiError } from "../utils/ApiError.js";
 import { ApiResponse } from "../utils/ApiResponse.js";
 import {
+  deleteSessionServices,
+  getAllSessionServices,
   getAllUserServices,
+  getSessionByIdServices,
+  getUserByIdServices,
   profileServices,
 } from "../services/admin.services.js";
 import { HTTPSTATUS } from "../config/http.config.js";
@@ -20,7 +24,49 @@ export const profileController = asyncHandler(async (req, res) => {
 
 export const getAllUserController = asyncHandler(async (req, res) => {
   const user = await getAllUserServices();
-  console.log("userrr", user);
- 
-  return res.status(HTTPSTATUS.OK, "Users fetched successfully", { user });
+
+  return res
+    .status(HTTPSTATUS.OK)
+    .json(
+      new ApiResponse(HTTPSTATUS.OK, "Users fetched successfully", { user }),
+    );
+});
+
+export const getUserByIdController = asyncHandler(async (req, res) => {
+  const userId = req.params?.id;
+  const user = await getUserByIdServices(userId);
+
+  return res
+    .status(HTTPSTATUS.OK)
+    .json(
+      new ApiResponse(HTTPSTATUS.OK, "User fetched successfully", { user }),
+    );
+});
+
+export const getAllSessionController = asyncHandler(async (req, res) => {
+  const userId = req.user.id;
+  const sessions = await getAllSessionServices(userId);
+  return res
+    .status(HTTPSTATUS.OK)
+    .json(
+      new ApiResponse(HTTPSTATUS.OK, "Fetched all user sessions", { sessions }),
+    );
+});
+
+export const getSessionByIdController = asyncHandler(async (req, res) => {
+  const userId = req.user.id;
+  const { sessionId } = req.params;
+  const session = await getSessionByIdServices(sessionId, userId);
+  return res
+    .status(HTTPSTATUS.OK)
+    .json(new ApiResponse(HTTPSTATUS.OK, "fetched session by id", { session }));
+});
+
+export const deleteSessionController = asyncHandler(async (req, res) => {
+  const { sessionId } = req.params;
+  await deleteSessionServices(sessionId);
+
+  return res
+    .status(HTTPSTATUS.OK)
+    .json(new ApiResponse(HTTPSTATUS.OK, "Session deleted successfully"));
 });
