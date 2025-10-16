@@ -106,3 +106,24 @@ export const deleteSessionServices = async (sessionId) => {
     },
   });
 };
+
+export const deleteUserByIdServices = async (userId) => {
+  const user = await prisma.user.findUnique({
+    where: {
+      id: userId,
+    },
+  });
+
+  if (!user) {
+    throw new ApiError(HTTPSTATUS.BAD_REQUEST, "User no found");
+  }
+  await prisma.session.deleteMany({
+    where: { userId },
+  });
+
+  return await prisma.user.delete({
+    where: {
+      id: userId,
+    },
+  });
+};

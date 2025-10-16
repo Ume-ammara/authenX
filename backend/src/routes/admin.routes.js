@@ -3,6 +3,7 @@ import { isAdmin } from "../middlewares/auth.middleware.js";
 import { isLoggedIn } from "../middlewares/auth.middleware.js";
 import {
   deleteSessionController,
+  deleteUserByIdController,
   getAllSessionController,
   getAllUserController,
   getSessionByIdController,
@@ -21,4 +22,6 @@ router
 
 router.route("/:sessionId").get(isLoggedIn, isAdmin, getSessionByIdController);
 router.route("/delete/:sessionId").delete(isLoggedIn, deleteSessionController);
+
+router.route("/:userId").delete(isLoggedIn, isAdmin, deleteUserByIdController);
 export default router;

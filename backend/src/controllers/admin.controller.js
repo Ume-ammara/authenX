@@ -3,6 +3,7 @@ import { ApiError } from "../utils/ApiError.js";
 import { ApiResponse } from "../utils/ApiResponse.js";
 import {
   deleteSessionServices,
+  deleteUserByIdServices,
   getAllSessionServices,
   getAllUserServices,
   getSessionByIdServices,
@@ -69,4 +70,13 @@ export const deleteSessionController = asyncHandler(async (req, res) => {
   return res
     .status(HTTPSTATUS.OK)
     .json(new ApiResponse(HTTPSTATUS.OK, "Session deleted successfully"));
+});
+
+export const deleteUserByIdController = asyncHandler(async (req, res) => {
+  const { userId } = req.params;
+
+  await deleteUserByIdServices(userId);
+  return res
+    .status(HTTPSTATUS.OK)
+    .json(new ApiResponse(HTTPSTATUS.OK, "User deleted successfully"));
 });
