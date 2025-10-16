@@ -1,4 +1,3 @@
-import { email } from "zod";
 import { prisma } from "../config/db.js";
 import { ApiError } from "../utils/ApiError.js";
 import { HTTPSTATUS } from "../config/http.config.js";
