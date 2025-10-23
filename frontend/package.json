@@ -10,7 +10,9 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@hookform/resolvers": "^5.2.2",
     "@radix-ui/react-slot": "^1.2.3",
+    "@reduxjs/toolkit": "^2.9.1",
     "@tailwindcss/vite": "^4.1.14",
     "@tanstack/react-router": "^1.133.22",
     "@tanstack/react-router-devtools": "^1.133.22",
@@ -21,6 +23,8 @@
     "react": "^19.1.1",
     "react-dom": "^19.2.0",
     "react-hook-form": "^7.65.0",
+    "react-redux": "^9.2.0",
+    "redux-thunk": "^3.1.0",
     "tailwind-merge": "^3.3.1",
     "tailwindcss": "^4.1.14",
     "zod": "^4.1.12"

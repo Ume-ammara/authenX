@@ -1,14 +1,27 @@
 import { Link } from "@tanstack/react-router";
 import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
+import { useAppDispatch, useAppSelector } from "@/hooks/hooks";
 import { Input } from "../ui/input";
 import { Button } from "../ui/button";
 import { useForm } from "react-hook-form";
+import { registerUserSchema } from "@/schemas/authSchema";
+import { zodResolver } from "@hookform/resolvers/zod";
 
 export default function SignupForm() {
-    const { register, handleSubmit } = useForm();
+    const dispatch = useAppDispatch()
+
+
+    const {
+        register,
+        handleSubmit,
+        formState: { errors },
+    } = useForm({
+        resolver: zodResolver(registerUserSchema)
+    });
 
     const onSubmit = (data) => {
-        console.log("Signup Data:", data);
+        console.log("Form Data:", data);
+        dispatch(register(data));
     };
 
     return (

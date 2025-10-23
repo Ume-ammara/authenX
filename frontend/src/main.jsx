@@ -1,7 +1,8 @@
 import { StrictMode } from 'react'
 import ReactDOM from "react-dom/client"
 import './index.css'
-import App from './App.jsx'
+import { store } from './redux/store'
+import { Provider } from 'react-redux'
 import { RouterProvider, createRouter } from '@tanstack/react-router'
 import { routeTree } from './routeTree.gen'
 
@@ -12,7 +13,9 @@ if (!rootElement.innerHTML) {
   const root = ReactDOM.createRoot(rootElement)
   root.render(
     <StrictMode>
-      <RouterProvider router={router} />
+      <Provider store={store}>
+        <RouterProvider router={router} />
+      </Provider>
     </StrictMode>,
   )
 }
