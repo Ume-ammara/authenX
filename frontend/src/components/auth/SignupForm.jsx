@@ -6,9 +6,17 @@ import { Button } from "../ui/button";
 import { useForm } from "react-hook-form";
 import { registerUserSchema } from "@/schemas/authSchema";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { registerUser } from "@/redux/features/authThunks";
+import { useNavigate } from "@tanstack/react-router";
+
 
 export default function SignupForm() {
     const dispatch = useAppDispatch()
+    const navigate = useNavigate()
+
+    const { success, loading, error } = useAppSelector(
+        (state) => state.auth
+    );
 
 
     const {
@@ -21,8 +29,20 @@ export default function SignupForm() {
 
     const onSubmit = (data) => {
         console.log("Form Data:", data);
-        dispatch(register(data));
+        dispatch(registerUser(data));
     };
+
+
+
+    if (success) return (
+        <div className='flex  flex-col items-center justify-center h-screen'>
+            <h1 className='text-3xl font-bold '>Signup successful!</h1>
+            <p className='text-gray-600 mt-2'>Please check your email to verify your account.</p>
+            <Link to="/auth/login" className="text-blue-500 hover:underline">
+                Log in
+            </Link>
+        </div>
+    )
 
     return (
         <div className="min-h-screen flex items-center justify-center bg-[#1A1A1A] text-[#FFE1AF]">
@@ -44,7 +64,7 @@ export default function SignupForm() {
                                 Full Name
                             </label>
                             <Input
-                                {...register("fullName", { required: true })}
+                                {...register("fullname", { required: true })}
                                 placeholder="Enter your full name"
                                 className="bg-[#1A1A1A] border-[#B77466]/30 text-[#FFE1AF] placeholder-[#E2B59A]/50 focus:border-[#B77466]"
                             />

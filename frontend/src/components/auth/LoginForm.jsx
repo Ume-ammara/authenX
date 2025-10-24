@@ -5,7 +5,11 @@ import { Button } from "@/components/ui/button";
 import { Link } from "@tanstack/react-router";
 
 export default function LoginForm() {
+    const { register, handleSubmit } = useForm();
 
+    const onSubmit = (data) => {
+        console.log("Form Data:", data);
+    };
 
     return (
         <div className="min-h-screen flex items-center justify-center bg-[#1A1A1A] text-[#FFE1AF]">

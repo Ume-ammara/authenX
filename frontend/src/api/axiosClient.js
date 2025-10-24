@@ -4,10 +4,10 @@ const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || "http://localhost:4000";
 
 const axiosClient = axios.create({
   baseURL: `${BACKEND_URL}/api/v1`,
+  withCredentials: true,
   headers: {
     "Content-Type": "application/json",
   },
-  withCredentials: true,
 });
 
 axiosClient.interceptors.response.use(

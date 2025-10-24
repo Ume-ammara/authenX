@@ -21,6 +21,7 @@ export const userLogin = createAsyncThunk(
 export const registerUser = createAsyncThunk(
   "auth/registerUser",
   async (formData, { rejectWithValue }) => {
+    console.log("Thunk called ", formData);
     try {
       const res = await axiosClient.post("/auth/register", formData);
       console.log(" Successfully registered:", res.data?.data);
@@ -31,6 +32,20 @@ export const registerUser = createAsyncThunk(
         error.message ||
         "Registration failed. Please try again.";
       return rejectWithValue(message);
+    }
+  }
+);
+
+export const verifyUser = createAsyncThunk(
+  "auth/verify",
+  async (token, { rejectWithValue }) => {
+    try {
+      const res = await axiosClient.get(`/auth/verify/${token}`);
+      console.log("verify email user", res.data?.data?.messages);
+    } catch (error) {
+      return rejectWithValue(
+        error.response?.data?.message || "Email verification failed"
+      );
     }
   }
 );

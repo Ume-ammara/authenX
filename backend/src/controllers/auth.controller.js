@@ -20,6 +20,8 @@ import passport from "passport";
 import { env } from "../config/env.js";
 
 export const registercontoller = asyncHandler(async (req, res) => {
+  console.log("✅ Register API hit");
+
   const { fullname, email, password } = registerSchema.parse(req.body);
   const avatarLocalPath = req.files?.avatar[0]?.path;
   console.log("file received", avatarLocalPath);
