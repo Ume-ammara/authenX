@@ -12,6 +12,7 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AuthSignupRouteImport } from './routes/auth/signup'
 import { Route as AuthLoginRouteImport } from './routes/auth/login'
+import { Route as AdminProfileRouteImport } from './routes/admin/profile'
 import { Route as AuthVerifyTokenRouteImport } from './routes/auth/verify/$token'
 
 const IndexRoute = IndexRouteImport.update({
@@ -29,6 +30,11 @@ const AuthLoginRoute = AuthLoginRouteImport.update({
   path: '/auth/login',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AdminProfileRoute = AdminProfileRouteImport.update({
+  id: '/admin/profile',
+  path: '/admin/profile',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AuthVerifyTokenRoute = AuthVerifyTokenRouteImport.update({
   id: '/auth/verify/$token',
   path: '/auth/verify/$token',
@@ -37,12 +43,14 @@ const AuthVerifyTokenRoute = AuthVerifyTokenRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/admin/profile': typeof AdminProfileRoute
   '/auth/login': typeof AuthLoginRoute
   '/auth/signup': typeof AuthSignupRoute
   '/auth/verify/$token': typeof AuthVerifyTokenRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/admin/profile': typeof AdminProfileRoute
   '/auth/login': typeof AuthLoginRoute
   '/auth/signup': typeof AuthSignupRoute
   '/auth/verify/$token': typeof AuthVerifyTokenRoute
@@ -50,20 +58,38 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/admin/profile': typeof AdminProfileRoute
   '/auth/login': typeof AuthLoginRoute
   '/auth/signup': typeof AuthSignupRoute
   '/auth/verify/$token': typeof AuthVerifyTokenRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/auth/login' | '/auth/signup' | '/auth/verify/$token'
+  fullPaths:
+    | '/'
+    | '/admin/profile'
+    | '/auth/login'
+    | '/auth/signup'
+    | '/auth/verify/$token'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/auth/login' | '/auth/signup' | '/auth/verify/$token'
-  id: '__root__' | '/' | '/auth/login' | '/auth/signup' | '/auth/verify/$token'
+  to:
+    | '/'
+    | '/admin/profile'
+    | '/auth/login'
+    | '/auth/signup'
+    | '/auth/verify/$token'
+  id:
+    | '__root__'
+    | '/'
+    | '/admin/profile'
+    | '/auth/login'
+    | '/auth/signup'
+    | '/auth/verify/$token'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AdminProfileRoute: typeof AdminProfileRoute
   AuthLoginRoute: typeof AuthLoginRoute
   AuthSignupRoute: typeof AuthSignupRoute
   AuthVerifyTokenRoute: typeof AuthVerifyTokenRoute
@@ -92,6 +118,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthLoginRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/admin/profile': {
+      id: '/admin/profile'
+      path: '/admin/profile'
+      fullPath: '/admin/profile'
+      preLoaderRoute: typeof AdminProfileRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/auth/verify/$token': {
       id: '/auth/verify/$token'
       path: '/auth/verify/$token'
@@ -104,6 +137,7 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AdminProfileRoute: AdminProfileRoute,
   AuthLoginRoute: AuthLoginRoute,
   AuthSignupRoute: AuthSignupRoute,
   AuthVerifyTokenRoute: AuthVerifyTokenRoute,

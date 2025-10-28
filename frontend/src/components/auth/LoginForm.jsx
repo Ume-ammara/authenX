@@ -3,12 +3,29 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Link } from "@tanstack/react-router";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { loginUserSchema } from "@/schemas/authSchema";
+import { useAppDispatch, useAppSelector } from "@/hooks/hooks";
+import { userLogin } from "@/redux/features/authThunks";
+import { useNavigate } from "@tanstack/react-router";
 
 export default function LoginForm() {
-    const { register, handleSubmit } = useForm();
+    const dispatch = useAppDispatch()
+    const navigate = useNavigate()
+    const { user } = useAppSelector((state) => state.auth)
+
+    const {
+        register,
+        handleSubmit,
+        formState: { errors },
+    } = useForm({
+        resolver: zodResolver(loginUserSchema),
+    });
 
     const onSubmit = (data) => {
         console.log("Form Data:", data);
+        dispatch(userLogin(data))
+        navigate({ to: "/admin/profile" });
     };
 
     return (
