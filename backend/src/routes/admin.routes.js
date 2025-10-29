@@ -2,6 +2,7 @@ import { Router } from "express";
 import { isAdmin } from "../middlewares/auth.middleware.js";
 import { isLoggedIn } from "../middlewares/auth.middleware.js";
 import {
+  avatarController,
   deleteSessionController,
   deleteUserByIdController,
   getAllSessionController,
@@ -10,9 +11,13 @@ import {
   getUserByIdController,
   profileController,
 } from "../controllers/admin.controller.js";
+import { upload } from "../middlewares/multer.js";
 
 const router = Router();
 router.route("/profile").get(isLoggedIn, profileController);
+router
+  .route("/profile/avatar")
+  .post(isLoggedIn, upload.single("avatar"), avatarController);
 router.route("/get-all-users").get(isLoggedIn, isAdmin, getAllUserController);
 router.route("/user/:id").get(isLoggedIn, isAdmin, getUserByIdController);
 

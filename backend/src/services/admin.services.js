@@ -27,6 +27,33 @@ export const profileServices = async (userId) => {
   return user;
 };
 
+export const avatarServices = async (userId, avatarLocalPath) => {
+  const user = await prisma.user.findUnique({
+    where: { id: userId },
+  });
+  if (!user) {
+    throw new ApiError(HTTPSTATUS.NOT_FOUND, "User not found");
+  }
+
+  let avatarUrl = "";
+  if (avatarLocalPath) {
+    const uploadResult = await uploadOnCloudinary(avatarLocalPath);
+    avatarUrl = uploadResult?.secure_url || "";
+  }
+  const updatedUser = await prisma.user.update({
+    where: { id: userId },
+    data: { avatar: avatarUrl },
+    select: {
+      id: true,
+      fullname: true,
+      email: true,
+      avatar: true,
+    },
+  });
+
+  return updatedUser;
+};
+
 export const getAllUserServices = async () => {
   return await prisma.user.findMany({
     select: {

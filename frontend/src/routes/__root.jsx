@@ -3,7 +3,8 @@ import { useEffect } from 'react'
 import { Outlet, createRootRoute } from '@tanstack/react-router'
 import { TanStackRouterDevtools } from '@tanstack/react-router-devtools'
 import { useAppDispatch, useAppSelector } from '@/hooks/hooks'
-import { fetchUser } from '@/redux/features/userThunks'
+import { fetchUser } from '@/redux/features/authThunks'
+
 
 export const Route = createRootRoute({
     component: RootComponent,

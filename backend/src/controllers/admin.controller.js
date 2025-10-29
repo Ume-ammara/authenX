@@ -2,6 +2,7 @@ import { asyncHandler } from "../utils/asyncHandler.js";
 import { ApiError } from "../utils/ApiError.js";
 import { ApiResponse } from "../utils/ApiResponse.js";
 import {
+  avatarServices,
   deleteSessionServices,
   deleteUserByIdServices,
   getAllSessionServices,
@@ -20,6 +21,21 @@ export const profileController = asyncHandler(async (req, res) => {
     .status(HTTPSTATUS.OK)
     .json(
       new ApiResponse(HTTPSTATUS.OK, "Profile fetched successfully", { user }),
+    );
+});
+
+export const avatarController = asyncHandler(async (req, res) => {
+  const userId = req.user._id;
+  const avatarLocalPath = req.file?.path;
+
+  if (!avatarLocalPath) {
+    throw new ApiError(HTTPSTATUS.BAD_REQUEST, "No file uploaded");
+  }
+  const user = avatarServices(userId, avatarLocalPath);
+  return res
+    .status(HTTPSTATUS.OK)
+    .json(
+      new ApiResponse(HTTPSTATUS.OK, "Avatar uploaded successfully", { user }),
     );
 });
 
