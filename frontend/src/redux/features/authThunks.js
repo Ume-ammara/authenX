@@ -66,3 +66,35 @@ export const fetchUser = createAsyncThunk(
     }
   }
 );
+
+export const updateAvatar = createAsyncThunk(
+  "admin/profile/avatar",
+  async (file, { rejectWithValue }) => {
+    try {
+      const formData = new FormData();
+      formData.append("avatar", file);
+      const res = await axiosClient.post("/admin/profile/avatar", formData, {
+        headers: { "Content-Type": "multipart/form-data" },
+      });
+      console.log(" Avatar upload success:", res.data);
+      return res.data.data.user;
+    } catch (error) {
+      return rejectWithValue(
+        error.response?.data?.message || "Avatar upload failed"
+      );
+    }
+  }
+);
+
+export const logoutUser = createAsyncThunk(
+  "auth/logout",
+  async (_, { rejectWithValue }) => {
+    try {
+      const res = await axiosClient.delete("/auth/logout");
+      return res.data?.data?.message;
+    } catch (error) {
+      const message = error.response?.data?.message || "Logout failed";
+      return rejectWithValue(message);
+    }
+  }
+);

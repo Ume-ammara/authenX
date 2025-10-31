@@ -1,6 +1,7 @@
 import { prisma } from "../config/db.js";
 import { ApiError } from "../utils/ApiError.js";
 import { HTTPSTATUS } from "../config/http.config.js";
+import { uploadOnCloudinary } from "../utils/cloudinary.js";
 
 export const profileServices = async (userId) => {
   const user = await prisma.user.findUnique({

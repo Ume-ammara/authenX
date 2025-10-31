@@ -1,5 +1,12 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { registerUser, userLogin, verifyUser, fetchUser } from "./authThunks";
+import {
+  registerUser,
+  userLogin,
+  verifyUser,
+  fetchUser,
+  updateAvatar,
+  logoutUser,
+} from "./authThunks";
 
 const initialState = {
   user: null,
@@ -90,6 +97,33 @@ const authSlice = createSlice({
         state.isLoading = false;
         state.error = action.payload;
         state.isAuthenticated = false;
+      });
+
+    //  update avatar
+
+    builder
+      .addCase(updateAvatar.pending, (state) => {
+        state.isLoading = true;
+        state.error = null;
+      })
+      .addCase(updateAvatar.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.user = action.payload.avatar;
+        state.isAuthenticated = true;
+      })
+      .addCase(updateAvatar.rejected, (state, action) => {
+        state.isLoading = false;
+        state.error = action.payload;
+      });
+
+    builder
+      .addCase(logoutUser.fulfilled, (state) => {
+        state.user = null;
+        state.isAuthenticated = false;
+        state.error = null;
+      })
+      .addCase(logoutUser.rejected, (state, action) => {
+        state.error = action.payload;
       });
   },
 });

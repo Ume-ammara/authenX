@@ -1,11 +1,11 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useRef } from "react";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useAppDispatch, useAppSelector } from "@/hooks/hooks";
-import { fetchUser } from "@/redux/features/authThunks";
-import { Edit } from "lucide-react";
+import { fetchUser, logoutUser, updateAvatar } from "@/redux/features/authThunks";
+import { Camera, Edit } from "lucide-react";
 
 export const Route = createFileRoute("/admin/profile")({
   component: RouteComponent,
@@ -15,6 +15,18 @@ function RouteComponent() {
   const dispatch = useAppDispatch();
   const { user, isLoading } = useAppSelector((state) => state.auth);
   const navigate = useNavigate();
+  const fileInputRef = useRef()
+
+  const handleAvatarClick = () => {
+    fileInputRef.current?.click();
+  };
+
+  const handleAvatarChange = (e) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      dispatch(updateAvatar(file));
+    }
+  };
 
   useEffect(() => {
     dispatch(fetchUser());
@@ -42,30 +54,47 @@ function RouteComponent() {
 
         {/* Header Section */}
         <CardHeader className="flex flex-col sm:flex-row items-center gap-6 border-b border-[#C67B5B]/20 pb-6">
-          <Avatar className="w-24 h-24 shadow-md border border-[#C67B5B]/30">
-            <AvatarImage src={user.avatar || ""} alt={user.fullname} />
-            <AvatarFallback className="bg-[#C67B5B] text-[#0F0F0F] text-2xl font-bold">
-              {user.fullname?.charAt(0) ?? "U"}
-            </AvatarFallback>
-          </Avatar>
+          <div
+            onClick={handleAvatarClick}
+            className="relative cursor-pointer group"
+          >
+            <Avatar className="w-28 h-28 border shadow">
+              <AvatarImage src={user.avatar} alt={user.fullname} />
+              <AvatarFallback>{user.fullname?.[0] ?? "U"}</AvatarFallback>
+            </Avatar>
+
+            {/* Upload Overlay */}
+            <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 flex items-center justify-center rounded-full transition">
+              <Camera className="text-white w-6 h-6" />
+            </div>
+
+            {/* Hidden Input */}
+            <input
+              type="file"
+              accept="image/*"
+              ref={fileInputRef}
+              onChange={handleAvatarChange}
+              className="hidden"
+            />
+          </div>
 
           <div className="text-center sm:text-left">
             <CardTitle className="text-2xl text-[#C67B5B] font-semibold">
               {user.fullname}
             </CardTitle>
-            {/* <p className="text-sm text-[#E5B7A3]/80">
+            <p className="text-sm text-[#E5B7A3]/80">
               @{user.username || "username_not_set"}
             </p>
             <p className="text-sm mt-2 text-[#E5B7A3]/70 max-w-md">
               {user.bio || "No bio available."}
-            </p> */}
+            </p>
           </div>
 
           <Button
             variant="outline"
             size="sm"
             className="md:ml-auto border-[#C67B5B]/50 text-[#C67B5B] hover:bg-[#C67B5B] hover:text-[#0F0F0F]"
-            onClick={() => navigate({ to: "/admin/edit-profile" })}
+          // onClick={() => navigate({ to: "/admin/edit-profile" })}
           >
             <Edit className="mr-2 h-4 w-4" />
             Edit
@@ -91,11 +120,14 @@ function RouteComponent() {
 
           {/* Divider + Footer */}
           <div className="pt-4 border-t border-[#C67B5B]/20 text-sm">
-            <p className="font-medium text-[#C67B5B] mb-2">Account Actions</p>
             <Button
               className="bg-[#C67B5B] text-[#0F0F0F] hover:bg-[#A86244]"
               size="sm"
-              onClick={() => navigate({ to: "/logout" })}
+              onClick={() => {
+                dispatch(logoutUser()).then(() => {
+                  navigate({ to: "/auth/login" });
+                });
+              }}
             >
               Logout
             </Button>

@@ -31,7 +31,7 @@ export const avatarController = asyncHandler(async (req, res) => {
   if (!avatarLocalPath) {
     throw new ApiError(HTTPSTATUS.BAD_REQUEST, "No file uploaded");
   }
-  const user = avatarServices(userId, avatarLocalPath);
+  const user = await avatarServices(userId, avatarLocalPath);
   return res
     .status(HTTPSTATUS.OK)
     .json(
