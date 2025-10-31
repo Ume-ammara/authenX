@@ -7,7 +7,7 @@ import { useAppDispatch, useAppSelector } from "@/hooks/hooks";
 import { fetchUser, logoutUser, updateAvatar } from "@/redux/features/authThunks";
 import { Camera, Edit } from "lucide-react";
 
-export const Route = createFileRoute("/admin/profile")({
+export const Route = createFileRoute("/profile")({
   component: RouteComponent,
 });
 

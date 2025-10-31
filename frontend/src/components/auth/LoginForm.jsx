@@ -84,6 +84,9 @@ export default function LoginForm() {
                     <Button
                         variant="outline"
                         className="w-full flex items-center justify-center gap-2 border-[#B77466]/30 text-[#E2B59A] hover:bg-[#B77466]/10"
+                        onClick={() =>
+                            (window.location.href = `${import.meta.env.VITE_BACKEND_URL}/api/v1/auth/google`)
+                        }
                     >
                         <img
                             src="https://www.svgrepo.com/show/475656/google-color.svg"

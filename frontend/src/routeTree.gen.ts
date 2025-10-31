@@ -9,12 +9,17 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as ProfileRouteImport } from './routes/profile'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AuthSignupRouteImport } from './routes/auth/signup'
 import { Route as AuthLoginRouteImport } from './routes/auth/login'
-import { Route as AdminProfileRouteImport } from './routes/admin/profile'
 import { Route as AuthVerifyTokenRouteImport } from './routes/auth/verify/$token'
 
+const ProfileRoute = ProfileRouteImport.update({
+  id: '/profile',
+  path: '/profile',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
@@ -30,11 +35,6 @@ const AuthLoginRoute = AuthLoginRouteImport.update({
   path: '/auth/login',
   getParentRoute: () => rootRouteImport,
 } as any)
-const AdminProfileRoute = AdminProfileRouteImport.update({
-  id: '/admin/profile',
-  path: '/admin/profile',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const AuthVerifyTokenRoute = AuthVerifyTokenRouteImport.update({
   id: '/auth/verify/$token',
   path: '/auth/verify/$token',
@@ -43,14 +43,14 @@ const AuthVerifyTokenRoute = AuthVerifyTokenRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
-  '/admin/profile': typeof AdminProfileRoute
+  '/profile': typeof ProfileRoute
   '/auth/login': typeof AuthLoginRoute
   '/auth/signup': typeof AuthSignupRoute
   '/auth/verify/$token': typeof AuthVerifyTokenRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
-  '/admin/profile': typeof AdminProfileRoute
+  '/profile': typeof ProfileRoute
   '/auth/login': typeof AuthLoginRoute
   '/auth/signup': typeof AuthSignupRoute
   '/auth/verify/$token': typeof AuthVerifyTokenRoute
@@ -58,7 +58,7 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
-  '/admin/profile': typeof AdminProfileRoute
+  '/profile': typeof ProfileRoute
   '/auth/login': typeof AuthLoginRoute
   '/auth/signup': typeof AuthSignupRoute
   '/auth/verify/$token': typeof AuthVerifyTokenRoute
@@ -67,21 +67,16 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
-    | '/admin/profile'
+    | '/profile'
     | '/auth/login'
     | '/auth/signup'
     | '/auth/verify/$token'
   fileRoutesByTo: FileRoutesByTo
-  to:
-    | '/'
-    | '/admin/profile'
-    | '/auth/login'
-    | '/auth/signup'
-    | '/auth/verify/$token'
+  to: '/' | '/profile' | '/auth/login' | '/auth/signup' | '/auth/verify/$token'
   id:
     | '__root__'
     | '/'
-    | '/admin/profile'
+    | '/profile'
     | '/auth/login'
     | '/auth/signup'
     | '/auth/verify/$token'
@@ -89,7 +84,7 @@ export interface FileRouteTypes {
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
-  AdminProfileRoute: typeof AdminProfileRoute
+  ProfileRoute: typeof ProfileRoute
   AuthLoginRoute: typeof AuthLoginRoute
   AuthSignupRoute: typeof AuthSignupRoute
   AuthVerifyTokenRoute: typeof AuthVerifyTokenRoute
@@ -97,6 +92,13 @@ export interface RootRouteChildren {
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/profile': {
+      id: '/profile'
+      path: '/profile'
+      fullPath: '/profile'
+      preLoaderRoute: typeof ProfileRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/': {
       id: '/'
       path: '/'
@@ -118,13 +120,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthLoginRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/admin/profile': {
-      id: '/admin/profile'
-      path: '/admin/profile'
-      fullPath: '/admin/profile'
-      preLoaderRoute: typeof AdminProfileRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/auth/verify/$token': {
       id: '/auth/verify/$token'
       path: '/auth/verify/$token'
@@ -137,7 +132,7 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
-  AdminProfileRoute: AdminProfileRoute,
+  ProfileRoute: ProfileRoute,
   AuthLoginRoute: AuthLoginRoute,
   AuthSignupRoute: AuthSignupRoute,
   AuthVerifyTokenRoute: AuthVerifyTokenRoute,

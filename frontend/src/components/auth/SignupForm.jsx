@@ -123,6 +123,9 @@ export default function SignupForm() {
                     <Button
                         variant="outline"
                         className="w-full flex items-center justify-center gap-2 border-[#C67B5B]/30 text-[#E5B7A3] hover:bg-[#C67B5B]/10"
+                        onClick={() =>
+                            (window.location.href = `${import.meta.env.VITE_BACKEND_URL}/api/v1/auth/google`)
+                        }
                     >
                         <img
                             src="https://www.svgrepo.com/show/475656/google-color.svg"
