@@ -14,19 +14,22 @@ import {
 import { upload } from "../middlewares/multer.js";
 
 const router = Router();
-router.route("/profile").get(isLoggedIn, profileController);
-router
-  .route("/profile/avatar")
-  .post(isLoggedIn, upload.single("avatar"), avatarController);
-router.route("/get-all-users").get(isLoggedIn, isAdmin, getAllUserController);
-router.route("/user/:id").get(isLoggedIn, isAdmin, getUserByIdController);
+// User profile routes
+router.get("/profile", isLoggedIn, profileController);
+router.post(
+  "/profile/avatar",
+  isLoggedIn,
+  upload.single("avatar"),
+  avatarController,
+);
 
-router
-  .route("/getallsessions")
-  .get(isLoggedIn, isAdmin, getAllSessionController);
+//  Admin: User management
+router.get("/users", isLoggedIn, isAdmin, getAllUserController);
+router.get("/user/:id", isLoggedIn, isAdmin, getUserByIdController);
+router.delete("/users/:id", isLoggedIn, isAdmin, deleteUserByIdController);
 
-router.route("/:sessionId").get(isLoggedIn, isAdmin, getSessionByIdController);
-router.route("/delete/:sessionId").delete(isLoggedIn, deleteSessionController);
-
-router.route("/:userId").delete(isLoggedIn, isAdmin, deleteUserByIdController);
+//  Admin: Session management
+router.get("/sessions", isLoggedIn, isAdmin, getAllSessionController);
+router.get("/sessions/:id", isLoggedIn, isAdmin, getSessionByIdController);
+router.delete("/sessions/:id", isLoggedIn, isAdmin, deleteSessionController);
 export default router;
