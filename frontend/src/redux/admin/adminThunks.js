@@ -3,12 +3,16 @@ import { axiosClient } from "@/api/axiosClient";
 
 export const fetchUserById = createAsyncThunk(
   "admin/fetchUserById",
-  async (id, { rejectWithValue }) => {
+  async (id, thunkAPI) => {
     try {
       const res = await axiosClient.get(`/admin/user/${id}`);
       console.log("User fetched by Id", res.data?.data?.user);
       return res.data?.data;
-    } catch (error) {}
+    } catch (error) {
+      return thunkAPI.rejectWithValue(
+        err.response?.data?.message || "Failed to fetch user details"
+      );
+    }
   }
 );
 
