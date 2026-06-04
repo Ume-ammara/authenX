@@ -15,7 +15,7 @@ export const userLogin = createAsyncThunk(
         "Login failed. Please try again.";
       return rejectWithValue(message);
     }
-  }
+  },
 );
 
 export const registerUser = createAsyncThunk(
@@ -33,7 +33,7 @@ export const registerUser = createAsyncThunk(
         "Registration failed. Please try again.";
       return rejectWithValue(message);
     }
-  }
+  },
 );
 
 export const verifyUser = createAsyncThunk(
@@ -44,10 +44,10 @@ export const verifyUser = createAsyncThunk(
       console.log("verify email user", res.data?.data?.messages);
     } catch (error) {
       return rejectWithValue(
-        error.response?.data?.message || "Email verification failed"
+        error.response?.data?.message || "Email verification failed",
       );
     }
-  }
+  },
 );
 
 export const fetchUser = createAsyncThunk(
@@ -64,7 +64,7 @@ export const fetchUser = createAsyncThunk(
         "Failed to fetch user. Please try again.";
       return rejectWithValue(message);
     }
-  }
+  },
 );
 
 export const updateAvatar = createAsyncThunk(
@@ -80,10 +80,10 @@ export const updateAvatar = createAsyncThunk(
       return res.data.data.user;
     } catch (error) {
       return rejectWithValue(
-        error.response?.data?.message || "Avatar upload failed"
+        error.response?.data?.message || "Avatar upload failed",
       );
     }
-  }
+  },
 );
 
 export const logoutUser = createAsyncThunk(
@@ -96,5 +96,5 @@ export const logoutUser = createAsyncThunk(
       const message = error.response?.data?.message || "Logout failed";
       return rejectWithValue(message);
     }
-  }
+  },
 );

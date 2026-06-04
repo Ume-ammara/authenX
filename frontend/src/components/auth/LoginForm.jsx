@@ -22,11 +22,13 @@ export default function LoginForm() {
         resolver: zodResolver(loginUserSchema),
     });
 
-    const onSubmit = (data) => {
+    const onSubmit = async (data) => {
         console.log("Form Data:", data);
-        dispatch(userLogin(data))
-        navigate({ to: "/admin/profile" });
+        await dispatch(userLogin(data))
+        navigate({ to: "/profile" });
     };
+
+
 
     return (
         <div className="min-h-screen flex items-center justify-center bg-[#1A1A1A] text-[#FFE1AF]">
