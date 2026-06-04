@@ -1,7 +1,8 @@
-##AuthenX
-AuthenX is a fullstack authentication system built with Node.js, PostgreSQL, and React. It provides a secure and scalable solution for user authentication and authorization in web applications.
+# AuthenX
 
-###Features
+**AuthenX** is a fullstack authentication system built with Node.js, PostgreSQL, and React. It provides a secure and scalable solution for user authentication and authorization in web applications.
+
+# Features
 
 - User registration and login
 - Password hashing with bcrypt
@@ -16,7 +17,7 @@ AuthenX is a fullstack authentication system built with Node.js, PostgreSQL, and
   -Forms React Hook Form
   -Routing with Tanstack Router
 
-##Tech Stack
+# Tech Stack
 
 - Backend
   - Node.js
@@ -33,12 +34,10 @@ AuthenX is a fullstack authentication system built with Node.js, PostgreSQL, and
   - React Hook Form
   - Tanstack Router
 
-##Installation
+# Installation
 
 1. Clone the repository
 
-```bash git clone https://github.com/authenx/authenx.git
-
-```
+bash git clone https://github.com/authenx/authenx.git
 
 cd authenx
