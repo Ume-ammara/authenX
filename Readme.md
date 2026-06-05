@@ -11,21 +11,21 @@
 - Email verification
 - Password reset functionality
 - OAuth 2.0 support (Google)
--Schema validation with Zod
--frontend built with React and Tailwind CSS
--Frontend state with Redux Toolkit
--Forms React Hook Form
--Routing with Tanstack Router
+- Schema validation with Zod
+- Frontend built with React and Tailwind CSS
+- Frontend state with Redux Toolkit
+- Forms with React Hook Form
+- Routing with TanStack Router
 
 # Tech Stack
 
 - Backend
   - Node.js
-  -PostgreSQL
-  -Prisma ORM
-  -Express.js
-  -bcrypt
-  -jsonwebtoken
+  - Express.js
+  - PostgreSQL
+  - Prisma ORM
+  - bcrypt
+  - JSON Web Tokens (JWT)
 
 - Frontend
   - React
